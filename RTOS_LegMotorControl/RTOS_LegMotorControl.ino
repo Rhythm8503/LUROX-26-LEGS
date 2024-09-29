@@ -1,3 +1,9 @@
+// Brian Ordonez 
+
+//   RTOS (Real Time Operating System) is being used to control
+//   multiple servo motors at the same time and have them
+//   synchronize to start and end at the same time
+
 #include <ESP32Servo.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"

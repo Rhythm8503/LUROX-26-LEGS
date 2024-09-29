@@ -1,3 +1,8 @@
+// Brian Ordonez
+
+// This code is used to control the indivisual motor 
+// and test to see if they work correctly
+
 #include <ESP32Servo.h>
 
 Servo servo1;

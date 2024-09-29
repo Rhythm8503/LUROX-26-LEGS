@@ -1,3 +1,9 @@
+//  Brian Ordonez
+
+//  Text based User Interface to control the indivisual
+//  servo motors by having the user pick the motor and 
+//  send the value to the motor.
+
 #include <ESP32Servo.h>
 
 Servo servo_1;
