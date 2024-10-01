@@ -1,4 +1,4 @@
-//  Brian Ordonez
+//  Brian Ordonez {Computer Engineer}
 
 //  Text based User Interface to control the indivisual
 //  servo motors by having the user pick the motor and 
