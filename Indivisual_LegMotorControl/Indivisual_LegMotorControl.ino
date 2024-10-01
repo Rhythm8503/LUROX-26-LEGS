@@ -24,10 +24,10 @@ void setup()
   delay(1000);
 
   servo1.write(90);
-  servo2.write(108);  // 108 (Straight)
-  servo3.write(90);  // 90 (Straight)
+  servo2.write(83);  // 108 (Straight)
+  servo3.write(80);  // 90 (Straight)
   servo4.write(95);
-  servo5.write(pos);
+  servo5.write(90);
   delay(1000);
 
 }
@@ -80,20 +80,57 @@ void loop()
 
   // SERVO#1
  
-  for(int i = 90; i <= 150; i++)
-  {
-    servo3.write(i);
-    delay(30);
-  }
+  // for(int i = 90; i <= 150; i++)
+  // {
+  //   servo3.write(i);
+  //   delay(30);
+  // }
 
-  delay(1000);
+  // delay(1000);
 
-  for(int i = 150; i >= 90; i--)
-  {
-    servo3.write(i);
-    delay(30);
-  }
+  // for(int i = 150; i >= 90; i--)
+  // {
+  //   servo3.write(i);
+  //   delay(30);
+  // }
 
-  delay(1000);
+      for(int i = 80; i >= 70; i--)      //108 - 140
+      {
+        servo3.write(i);
+        delay(30);
+      }
+
+      delay(1000);
+
+      for(int i = 70; i >= 20; i--)
+      {
+        servo3.write(i);
+        delay(30);
+      }
+
+      delay(1000);
+
+      for(int i = 20; i <= 80; i++) 
+      {
+        servo3.write(i);
+        delay(30);
+      }
+
+      // for(int i = 83; i <= 115; i++)
+      // {
+      //    servo2.write(i);
+      //    delay(30);
+      // }
+
+      // delay(1000);
+
+      // for(int i = 115; i >= 83; i--)
+      // {
+      //    servo2.write(i);
+      //    delay(30);
+      // }
+
+      // delay(1000);
+
 
 }
