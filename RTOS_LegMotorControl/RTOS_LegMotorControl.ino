@@ -44,20 +44,20 @@ void setup()
   Serial.begin(115200);
   delay(1000);
 
-  servo_1.attach(4);
-  servo_1.write(90);
+  // This is new Setup!
 
+  servo_1.attach(4);
   servo_2.attach(5);
   servo_3.attach(6);
-
-  servo_2.write(108);  
-  servo_3.write(90); 
-
   servo_4.attach(7);
   servo_5.attach(15);
 
+  servo_1.write(90);
+  servo_2.write(108);
+  servo_3.write(90); 
   servo_4.write(95);
-  servo_5.write(90); 
+  servo_5.write(90);
+
 
   delay(1000); // DO NOT ERASE THIS! THIS IS SUPER MEGA IMPORTANT!
 
