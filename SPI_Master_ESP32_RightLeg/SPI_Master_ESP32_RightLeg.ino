@@ -1,28 +1,39 @@
 #include <SPI.h>
 
-const int SS_PIN = 10;
+#define SCK_PIN 12
+#define MISO_PIN 13
+#define MOSI_PIN 11
+#define SS_PIN 10
+
+// SPI Settings
+SPIClass hspi(HSPI); // SPI2 = HSPI
+SPISettings spiSettings(1000000, MSBFIRST, SPI_MODE0); // 1 MHz, MSB first, Mode 0
 
 void setup() {
-  Serial.begin(115200);
-  SPI.begin(12, 13, 11, 10);                    // Initialize SPI as Master
-  pinMode(SS_PIN, OUTPUT);        // Set SS as output
-  digitalWrite(SS_PIN, HIGH);     // Set SS HIGH (inactive)
+    Serial.begin(115200);
 
-  delay(1000);
+    // Initialize HSPI with default pins
+    hspi.begin(SCK_PIN, MISO_PIN, MOSI_PIN, SS_PIN);
+    pinMode(SS_PIN, OUTPUT); // SS as output
+    digitalWrite(SS_PIN, HIGH); // Deselect slave
 }
 
 void loop() {
-  digitalWrite(SS_PIN, LOW);      // Enable Slave
-  SPI.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE0));
+    digitalWrite(SS_PIN, LOW); // Select slave
 
-  const char *message = "Hello from Master!";
-  for (int i = 0; i < strlen(message); i++) {
-    SPI.transfer(message[i]);     // Send message to Slave byte by byte
-    delay(50);
-  }
-  
-  SPI.endTransaction();
-  digitalWrite(SS_PIN, HIGH);     // Disable Slave
-  
-  delay(2000);                    // Wait before sending again
+    // SPI transaction
+    hspi.beginTransaction(spiSettings);
+    byte dataToSend = 0xAA; // Example data
+    byte receivedData = hspi.transfer(dataToSend); // Send and receive
+    hspi.endTransaction(); // End SPI transaction
+
+    digitalWrite(SS_PIN, HIGH); // Deselect slave
+
+    // Print data
+    Serial.print("Sent: 0x");
+    Serial.print(dataToSend, HEX);
+    Serial.print(", Received: 0x");
+    Serial.println(receivedData, HEX);
+
+    delay(1000);
 }
