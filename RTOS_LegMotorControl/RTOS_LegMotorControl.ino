@@ -23,6 +23,9 @@ Servo servo_5;
 
 void Task1code(void *pvParameters);
 void Task2code(void *pvParameters);
+void Task3code(void *pvParameters);
+void Task4code(void *pvParameters);
+
 
 EventGroupHandle_t syncEventGroup;
 
@@ -46,11 +49,11 @@ void setup()
 
   // This is new Setup!
 
-  servo_1.attach(4);
-  servo_2.attach(5);
-  servo_3.attach(6);
-  servo_4.attach(7);
-  servo_5.attach(15);
+  servo_1.attach(41);
+  servo_2.attach(20);
+  servo_3.attach(21);
+  servo_4.attach(36);
+  servo_5.attach(38);
 
   servo_1.write(90);
   servo_2.write(108);

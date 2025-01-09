@@ -63,7 +63,7 @@ void attachMotor(int servoChoice)
             servo_2.write(108);
             break;
 
-    case 3: servo_3.attach(6);
+    case 3: servo_3.attach(21);
             Serial.println("Servo_3: Attached");
             servo_3.write(90);
             break;
