@@ -1,37 +1,53 @@
 #include <SPI.h>
+#include <ESP32SPISlave.h>
 
-volatile bool received = false;
-char message[100];                // Buffer for incoming data
-int msgIndex = 0;                 // Updated variable name
-int numLine = 0;
+#define SS_PIN 10  // Slave Select Pin
+#define CLK_PIN 12 // Clock Pin (SCK)
+#define MOSI_PIN 11 // Master Out Slave In Pin (MOSI)
+#define MISO_PIN 13 // Master In Slave Out Pin (MISO)
 
-void IRAM_ATTR onSPIReceive();    // Forward declaration of the interrupt function
+ESP32SPISlave spiSlave;
 
 void setup() {
   Serial.begin(115200);
-  pinMode(SS, INPUT);             // SS pin as input
-  SPI.begin(12, 13, 11, 10);                    // Initialize SPI as Slave
 
-  // Set up an interrupt on the SS pin to detect when communication starts
-  attachInterrupt(digitalPinToInterrupt(SS), onSPIReceive, FALLING);
+  // Initialize SPI Slave with specific pin configuration
+  if (!spiSlave.begin(HSPI, CLK_PIN, MISO_PIN, MOSI_PIN, SS_PIN)) {
+    Serial.println("SPI Slave Initialization Failed!");
+    while (1);  // Stop execution if initialization fails
+  }
+
+  // Set up SPI configuration
+  spiSlave.setDataMode(SPI_MODE0);  // Set SPI Mode
+
+  pinMode(SS_PIN, INPUT_PULLUP);  // Slave select pin as input
+  Serial.println("Slave is ready...");
 }
 
 void loop() {
-  if (received) {
-    numLine++;
-    message[msgIndex] = '\0';       // Null-terminate the string
-    Serial.printf("%d%s", numLine, "Received: ");
-    Serial.println(message);        // Print received message
+  // Prepare buffers for transaction
+  uint8_t txBuffer[1] = {0};  // Transmit buffer
+  uint8_t rxBuffer[1] = {0};  // Receive buffer
 
-    msgIndex = 0;                   // Reset index for next message
-    received = false;               // Reset flag
-  }
-}
+  // Check if there are queued transactions
+  if (spiSlave.numTransactionsInFlight() > 0) {
+    // Wait for the transaction to complete
+    std::vector<size_t> results = spiSlave.wait();
 
-// Interrupt routine
-void IRAM_ATTR onSPIReceive() {
-  if (msgIndex < sizeof(message) - 1) {  // Prevent buffer overflow
-    message[msgIndex++] = SPI.transfer(0);  // Receive data
-    received = true;                     // Set flag when data is received
+    // Process received data (example: increment and send back)
+    if (spiSlave.numBytesReceived() > 0) {
+      // Get the received data
+      byte data = rxBuffer[0];
+
+      // Print the received data
+      Serial.print("Received: ");
+      Serial.println(data);
+
+      // Modify the received data (e.g., increment by 1)
+      txBuffer[0] = data + 1;  // Increment received value by 1
+    }
+
+    // Send the response to master (transmit modified data)
+    spiSlave.transfer(txBuffer, rxBuffer, sizeof(txBuffer));  // Transfer response
   }
 }
