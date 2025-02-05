@@ -1,15 +1,32 @@
 import spidev
 import time
 
-# Initialize SPI connection (assuming bus 0, device 0)
+# SPI configuration
+SPI_BUS = 0  # Change if needed based on your Jetson SPI interface
+SPI_DEVICE = 0  # Change based on the connected SPI device
+BUFFER_SIZE = 8  # Match ESP32 buffer size
+
+# Initialize SPI
 spi = spidev.SpiDev()
-spi.open(0, 0)  # Open SPI bus 0, device 0
-spi.max_speed_hz = 50000  # Set SPI clock speed (adjust as needed)
-spi.mode = 0b00  # SPI Mode 0 (CPOL=0, CPHA=0)
+spi.open(SPI_BUS, SPI_DEVICE)
+spi.max_speed_hz = 1000000  # Adjust speed as needed
+spi.mode = 0  # Must match ESP32's SPI_MODE0
 
-# Send 1 byte of data (e.g., 0x42)
-data = [0x42]  # 1 byte of data to send
-spi.xfer2(data)  # Transfer the data
+def send_spi_command(command):
+    """ Send a single byte command to the ESP32 """
+    tx_buf = [command] + [0] * (BUFFER_SIZE - 1)  # Pad buffer to match ESP32 size
+    rx_buf = spi.xfer2(tx_buf)  # Perform SPI transaction
+    print(f"Sent: {command}, Received: {rx_buf}")
 
-time.sleep(1)  # Wait for a while before closing
-spi.close()  # Close SPI connection
+try:
+    while True:
+        user_input = input("Enter a number (0-255) to send via SPI: ")
+        if user_input.isdigit():
+            send_spi_command(int(user_input))  # Convert input to integer and send
+        else:
+            print("Invalid input. Please enter a number between 0 and 255.")
+        time.sleep(0.5)  # Delay for stability
+
+except KeyboardInterrupt:
+    print("Closing SPI connection.")
+    spi.close()
