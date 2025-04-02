@@ -16,7 +16,7 @@ TaskHandle_t TASK4;    // IMU, ASS600. VS56LOX:           Core 1
 SemaphoreHandle_t motorAngleMutex;
 
 ESP32SPISlave slave;
-static constexpr uint32_t BUFFER_SIZE {5};
+static constexpr uint32_t BUFFER_SIZE {8};
 uint8_t spi_slave_tx_buf[BUFFER_SIZE];
 uint8_t spi_slave_rx_buf[BUFFER_SIZE];
 
@@ -133,10 +133,25 @@ void Communication(void * pvParameters)
 
     if(spi_slave_rx_buf[0] == 0xA1)
     {
-      Serial.println("[Core 0]: Handshake received, sending ACK...");
-      spi_slave_tx_buf[0] = 0xA5;
-      slave.transfer(spi_slave_tx_buf, spi_slave_rx_buf, BUFFER_SIZE);
+      // Serial.println("[Core 0]: Handshake received, sending ACK...");
+      // spi_slave_tx_buf[0] = 0xA5;
+      // slave.transfer(spi_slave_tx_buf, spi_slave_rx_buf, BUFFER_SIZE);
+      Serial.println("Leg Controller has been selected");
     }
+
+    Serial.println("Receiving 8-byte command...");
+    while(slave.transfer(spi_slave_tx_buf, spi_slave_rx_buf, 8) == 0);
+
+    Serial.print("Printing Received Data: ");
+    for (int i = 0; i < 8; i++) 
+    {
+      Serial.print(spi_slave_rx_buf[i], HEX);
+      Serial.print(" ");
+    }
+
+    Serial.println();
+    xTaskNotifyGive(TASK2);
+    vTaskDelay(pdMS_TO_TICKS(100));
 
     // xSemaphoreTake(motorAngleMutex, portMAX_DELAY);
     // // Reading Values 
