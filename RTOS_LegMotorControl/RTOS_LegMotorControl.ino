@@ -56,10 +56,10 @@ void setup()
   servo_5.attach(38);
 
   servo_1.write(90);
-  servo_2.write(108);
+  servo_2.write(92);
   servo_3.write(90); 
-  servo_4.write(95);
-  servo_5.write(90);
+  servo_4.write(87);
+  servo_5.write(94);
 
 
   delay(1000); // DO NOT ERASE THIS! THIS IS SUPER MEGA IMPORTANT!
@@ -118,7 +118,7 @@ void Task1code( void * pvParameters )
   {
       xEventGroupWaitBits(syncEventGroup, TASK1_STARTED_BIT | TASK2_STARTED_BIT | TASK3_STARTED_BIT | TASK4_STARTED_BIT, pdFALSE, pdTRUE, portMAX_DELAY);
 
-      for(int i = 108; i <= 140; i++)
+      for(int i = 92; i <= 124; i++)
       {
         servo_2.write(i);
         vTaskDelay(pdMS_TO_TICKS(30));
@@ -130,7 +130,7 @@ void Task1code( void * pvParameters )
 
       vTaskDelay(pdMS_TO_TICKS(10));
 
-      for(int i = 140; i >= 60; i--)
+      for(int i = 124; i >= 44; i--)
       {
         servo_2.write(i);
         vTaskDelay(pdMS_TO_TICKS(30));
@@ -143,7 +143,7 @@ void Task1code( void * pvParameters )
 
       vTaskDelay(pdMS_TO_TICKS(10));
 
-      for(int i = 60; i <= 108; i++)
+      for(int i = 44; i <= 92; i++)
       {
         servo_2.write(i);
         vTaskDelay(pdMS_TO_TICKS(30));
@@ -200,7 +200,7 @@ void Task3code( void * pvParameters )
 
   for(;;)
   {
-    for(int i = 95; i <= 110; i++)
+    for(int i = 87; i <= 97; i++)
     {
       servo_4.write(i);
       vTaskDelay(pdMS_TO_TICKS(30));
@@ -211,7 +211,7 @@ void Task3code( void * pvParameters )
 
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    for(int i = 110; i >= 80; i--)
+    for(int i = 97; i >= 77; i--)
     {
       servo_4.write(i);
       vTaskDelay(pdMS_TO_TICKS(30));
@@ -222,7 +222,7 @@ void Task3code( void * pvParameters )
 
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    for(int i = 80; i <= 95; i++)
+    for(int i = 77; i <= 87; i++)
     {
       servo_4.write(i);
       vTaskDelay(pdMS_TO_TICKS(30));
@@ -238,7 +238,7 @@ void Task4code( void * pvParameters )
 
   for(;;)
   {
-    for(int i = 90; i >= 75; i--)
+    for(int i = 94; i >= 84; i--)
     {
       servo_5.write(i);
       vTaskDelay(pdMS_TO_TICKS(30));
@@ -249,7 +249,7 @@ void Task4code( void * pvParameters )
 
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    for(int i = 75; i <= 105; i++)
+    for(int i = 84; i <= 104; i++)
     {
       servo_5.write(i);
       vTaskDelay(pdMS_TO_TICKS(30));
@@ -260,7 +260,7 @@ void Task4code( void * pvParameters )
 
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    for(int i = 105; i >= 90; i--)
+    for(int i = 104; i >= 94; i--)
     {
       servo_5.write(i);
       vTaskDelay(pdMS_TO_TICKS(30));

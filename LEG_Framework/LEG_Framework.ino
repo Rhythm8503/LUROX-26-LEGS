@@ -122,9 +122,6 @@ void Communication(void * pvParameters)
   Serial.print("LEG Communication Running...Core: ");
   Serial.println(xPortGetCoreID());
 
-  // Position pos;
-  // unsigned char data;
-
   for(;;)
   {
     Serial.println("[Core 0]: Waiting for Handshake...");
@@ -133,51 +130,28 @@ void Communication(void * pvParameters)
 
     if(spi_slave_rx_buf[0] == 0xA1)
     {
-      // Serial.println("[Core 0]: Handshake received, sending ACK...");
-      // spi_slave_tx_buf[0] = 0xA5;
-      // slave.transfer(spi_slave_tx_buf, spi_slave_rx_buf, BUFFER_SIZE);
-      Serial.println("Leg Controller has been selected");
+      Serial.println("Left Leg Controller Selected!");
+
+      Serial.println("Receiving 8-byte command...");
+      while(slave.transfer(spi_slave_tx_buf, spi_slave_rx_buf, BUFFER_SIZE) == 0);
+
+      Serial.print("Printing Received Data: ");
+      for (int i = 0; i < 8; i++) 
+      {
+        Serial.print(spi_slave_rx_buf[i], HEX);
+        Serial.print(" ");
+      }
+      Serial.println();
+
+      xTaskNotifyGive(TASK2);
+      vTaskDelay(pdMS_TO_TICKS(100));
     }
-
-    Serial.println("Receiving 8-byte command...");
-    while(slave.transfer(spi_slave_tx_buf, spi_slave_rx_buf, 8) == 0);
-
-    Serial.print("Printing Received Data: ");
-    for (int i = 0; i < 8; i++) 
+    else
     {
-      Serial.print(spi_slave_rx_buf[i], HEX);
-      Serial.print(" ");
+      Serial.println("[LEFT LEG]: No message for me!");
     }
-
-    Serial.println();
-    xTaskNotifyGive(TASK2);
-    vTaskDelay(pdMS_TO_TICKS(100));
-
-    // xSemaphoreTake(motorAngleMutex, portMAX_DELAY);
-    // // Reading Values 
-    // xSemaphoreGive(motorAngleMutex);
-    // Serial.println("[Core 0]: Received Motor Angles");
   }
 }
-
-
-
-
-
-    // delay(500);
-
-    // const size_t received_bytes = slave.transfer(spi_slave_tx_buf, spi_slave_rx_buf, BUFFER_SIZE);
-    //     // show received data
-        
-    //     data = spi_slave_rx_buf[0];
-    //     pos.x = map(data, 0, 255, 0, 180);
-    //     pos.y = map();
-         
-
-    // xQueueSend(queue, &pos, portMAX_DELAY);
-    // vTaskDelay(pdMS_TO_TICKS(100));
-//   } 
-// }
 
 void Read_Write(void * pvParameters)
 {
