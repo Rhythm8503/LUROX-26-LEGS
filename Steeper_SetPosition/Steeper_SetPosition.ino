@@ -1,60 +1,40 @@
-// #include "AccelStepper.h"
+#include <AccelStepper.h>
 
-// #define dirPin 1
-// #define stepPin 2
-// #define motorInterfaceType 3
-// #define indicator_LED 7
-
-// AccelStepper stepper = AccelStepper(motorInterfaceType, stepPin, dirPin);
-
-// void setup() 
-// {
-//   stepper.setMaxSpeed(1000); 
-//   pinMode(indicator_LED, OUTPUT);
-// }
-
-// void loop() 
-// {
-//   stepper.setCurrentPosition(0);
-//   digitalWrite(indicator_LED, HIGH);
-//   delay(3000);
-//   digitalWrite(indicator_LED, LOW);
-
-//   while(stepper.currentPosition() != 400)
-//   {
-//     stepper.setSpeed(200);
-//     stepper.runSpeed();
-//   }
-
-//   delay(1000);
-// }
-
-#include "AccelStepper.h"
-
+// Pin definitions for DRV8825
 #define dirPin 1
 #define stepPin 2
-#define motorInterfaceType 3
+#define motorInterfaceType 1  // Step/Dir mode
 
-AccelStepper stepper = AccelStepper(motorInterfaceType, stepPin, dirPin);
+AccelStepper stepper(motorInterfaceType, stepPin, dirPin);
 
-void setup() 
-{
-  stepper.setMaxSpeed(1600);
-  stepper.setAcceleration(960);
-  stepper.setCurrentPosition(0);
+long targetPosition = 0; // Default position
+
+void setup() {
+  Serial.begin(115200); // Start serial monitor
+  stepper.setMaxSpeed(10000);       // steps per second
+  stepper.setAcceleration(5000);   // steps per second squared
+  stepper.setCurrentPosition(0);  // Start at zero
+
+  Serial.println("Enter a target position (in steps):");
 }
 
-void loop() 
-{
-  stepper.moveTo(6400);
-  stepper.runToPosition();
+void loop() {
+  // Keep moving toward the target
+  stepper.run();
 
-  delay(1000);
-
-  stepper.moveTo(0);
-  stepper.runToPosition();
-
-  delay(1000);
-
+  // Check for serial input
+  if (Serial.available()) {
+    String input = Serial.readStringUntil('\n');  // Read input until Enter is pressed
+    input.trim();  // Remove whitespace
+    if (input.length() > 0) {
+      long newTarget = input.toInt(); // Convert input to integer
+      targetPosition = newTarget;
+      stepper.moveTo(targetPosition);
+      Serial.print("New target set to: ");
+      Serial.println(targetPosition);
+    }
+  }
 }
+
+
 
