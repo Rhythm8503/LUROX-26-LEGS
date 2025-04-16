@@ -12,8 +12,8 @@
 #define pin_OuterAnkle 38
 
 //const int homePosition[5] = {90, 92, 90, 87, 94};   // Brian's Homing Position
-//const int homePosition[5] = {90, 90, 95, 85, 95};   // Venn's Homing Position
-//const int homePosition[5] = {90, 124, 100, 97, 84};   // Bent Position #1
+const int homePosition[5] = {90, 90, 95, 85, 95};   // Venn's Homing Position
+////const int homePosition[5] = {90, 124, 100, 97, 84};   // Bent Position #1
 const int homePosition[5] = {90, 44, 150, 77, 104};   // Bent Position #2
 
 AccelStepper stepper(motorInterfaceType, stepPin, dirPin);
