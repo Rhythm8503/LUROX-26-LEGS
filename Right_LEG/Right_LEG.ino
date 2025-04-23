@@ -8,6 +8,12 @@
 #include <ESP32SPISlave.h>
 #include "semphr.h"
 
+#define pin_Swing 41
+#define pin_Raise 20
+#define pin_Knee 21
+#define pin_InnerAnkle 36
+#define pin_OuterAnkle 38
+
 TaskHandle_t TASK1;    // SPI/UART Communication/ISR :    Core 0
 TaskHandle_t TASK2;    // Variable Read/Write and Math:   Core 0
 TaskHandle_t TASK3;    // Process MotorAngles:            Core 0
@@ -80,6 +86,12 @@ void setup()
 
   // Create Queue for Data given from NVIDIA Jetsons
   queue = xQueueCreate(5, sizeof(MotorAngleReading));
+
+  swingServo.attach(pin_Swing);
+  raiseServo.attach(pin_Raise);
+  kneeServo.attach(pin_Knee);
+  innerAnkleServo.attach(pin_InnerAnkle);
+  outerAnkleServo.attach(pin_OuterAnkle);
 
   //Setting Up Tasks 1-4 
   xTaskCreatePinnedToCore(
@@ -201,7 +213,7 @@ void Communication(void * pvParameters)
 
       // Notify task that data is ready
       xTaskNotifyGive(TASK2);
-      vTaskDelay(pdMS_TO_TICKS(100));
+      vTaskDelay(pdMS_TO_TICKS(10));
     }
     else
     {
@@ -220,6 +232,8 @@ void Read_Write(void * pvParameters)  // TASK2
 
   for(;;)
   {
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
     if(xSemaphoreTake(sema, portMAX_DELAY))
     {
       //cmd.servo_id = spi_slave_rx_buf[1];
@@ -237,9 +251,7 @@ void Read_Write(void * pvParameters)  // TASK2
 
     xTaskNotifyGive(TASK3);
 
-    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-
-    vTaskDelay(pdMS_TO_TICKS(100));
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
 
@@ -252,6 +264,8 @@ void Motor_Processing(void * pvParameters)  // TASK3
 
   for(;;)
   {
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
     if(xQueueReceive(queue, &mar, portMAX_DELAY))
     {
       // Store the angles in global arrays (or use the local motorAngle structure)
@@ -262,15 +276,14 @@ void Motor_Processing(void * pvParameters)  // TASK3
       OuterAnklePA[0] = (int)((mar.M5 / 255.0f) * 180);
 
       // Notify all motor tasks to update simultaneously
-      xTaskNotifyGive(Task4);
-      xTaskNotifyGive(Task5);
-      xTaskNotifyGive(Task6);
-      xTaskNotifyGive(Task7);
-      xTaskNotifyGive(Task8);
+      xTaskNotifyGive(TASK4);
+      xTaskNotifyGive(TASK5);
+      xTaskNotifyGive(TASK6);
+      xTaskNotifyGive(TASK7);
+      xTaskNotifyGive(TASK8);
     }
 
-    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-    vTaskDelay(pdMS_TO_TICKS(100));
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
 
