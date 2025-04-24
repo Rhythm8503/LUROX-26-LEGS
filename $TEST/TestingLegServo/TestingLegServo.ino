@@ -5,6 +5,12 @@
 // #define stepPin 2
 // #define motorInterfaceType 1  // 1: DRV8825 Driver
 
+// #define pin_Swing 41
+// #define pin_Raise 20
+// #define pin_Knee 21
+// #define pin_InnerAnkle 36
+// #define pin_OuterAnkle 38
+
 #define pin_Swing 41
 #define pin_Raise 20
 #define pin_Knee 21
@@ -17,7 +23,10 @@
 //const int homePosition[5] = {90, 44, 150, 77, 104};   // Bent Position #2
 //const int homePosition[5] = {90, 78, 115, 68, 113};   // Bent Position #2
 //const int homePosition[5] = {97, 80, 80, 90, 90}; left 0
+//const int homePosition[5] = {97, 68, 60, 90, 110};            // NEW BENT KNEES POSITION;
+
 const int homePosition[5] = {97, 68, 60, 90, 110};
+
 // AccelStepper stepper(motorInterfaceType, stepPin, dirPin);
 // long targetPosition = 0; // Default position
 
