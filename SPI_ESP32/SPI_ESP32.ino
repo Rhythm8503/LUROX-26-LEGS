@@ -1,29 +1,76 @@
-/*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp32-spi-communication-arduino/
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*/
+#include <ESP32SPISlave.h>
 
-//Find the default SPI pins for your board
-//Make sure you have the right board selected in Tools > Boards
+ESP32SPISlave slave;
+
+static constexpr uint32_t BUFFER_SIZE {8};
+uint8_t spi_slave_tx_buf[BUFFER_SIZE];
+uint8_t spi_slave_rx_buf[BUFFER_SIZE];
+
+#define LED 39
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(115200);
-  Serial.print("MOSI: ");
-  Serial.println(MOSI);
-  Serial.print("MISO: ");
-  Serial.println(MISO);
-  Serial.print("SCK: ");
-  Serial.println(SCK);
-  Serial.print("SS: ");
-  Serial.println(SS);  
+    Serial.begin(115200);
+    Serial.println("Serial Enabled");
+    delay(2000);
+    pinMode(LED, OUTPUT);
+    // begin() after setting
+    // HSPI = CS: 15, CLK: 14, MOSI: 13, MISO: 12 -> default
+    // VSPI = CS:  5, CLK: 18, MOSI: 23, MISO: 19
+    slave.setDataMode(SPI_MODE0);
+    slave.begin();
+
+    Serial.println("SPI Began");
+    // clear buffers
+    memset(spi_slave_tx_buf, 0, BUFFER_SIZE);
+    memset(spi_slave_rx_buf, 0, BUFFER_SIZE);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+    delay(1000);
+    char data;
+    const size_t received_bytes = slave.transfer(spi_slave_tx_buf, spi_slave_rx_buf, BUFFER_SIZE);
+        // show received data
+         Serial.print("Command Received: ");
+         Serial.println(spi_slave_rx_buf[0]);
+         data = spi_slave_rx_buf[0];
 }
+
+// #include <ESP32SPISlave.h>
+
+// ESP32SPISlave slave;
+
+// static constexpr uint32_t BUFFER_SIZE {8};
+// uint8_t spi_slave_tx_buf[BUFFER_SIZE];
+// uint8_t spi_slave_rx_buf[BUFFER_SIZE];
+
+// #define LED 39
+
+// void setup() {
+//     Serial.begin(115200);
+//     Serial.println("Serial Enabled");
+//     delay(2000);
+
+//     pinMode(LED, OUTPUT);
+
+//     slave.setDataMode(SPI_MODE0);
+//     slave.begin();
+//     Serial.println("SPI Began");
+
+//     memset(spi_slave_tx_buf, 0, BUFFER_SIZE);
+//     memset(spi_slave_rx_buf, 0, BUFFER_SIZE);
+// }
+
+// void loop() {
+//     const size_t received_bytes = slave.transfer(spi_slave_tx_buf, spi_slave_rx_buf, BUFFER_SIZE);
+    
+//     if (received_bytes > 0) {
+//         Serial.print("Received: ");
+//         for (size_t i = 0; i < received_bytes; ++i) {
+//             char c = spi_slave_rx_buf[i];
+//             Serial.printf("%c", isPrintable(c) ? c : '.');  // print char if printable, else dot
+//         }
+//         Serial.println();  // newline after each transfer
+//     }
+
+//     delay(10); // Small delay to avoid flooding Serial
+// }
+
