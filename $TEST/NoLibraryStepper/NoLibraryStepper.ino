@@ -87,7 +87,7 @@ void loop() {
     if (input.length() > 0) {
       long targetPosition = input.toInt();
       long stepsToMove = targetPosition - currentPosition;
-n
+
       if (stepsToMove == 0) {
         Serial.println("Already at target position.");
         return;
