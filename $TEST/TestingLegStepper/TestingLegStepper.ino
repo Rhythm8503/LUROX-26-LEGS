@@ -11,8 +11,8 @@ long targetPosition = 0; // Default position
 
 void setup() {
   Serial.begin(115200); // Start serial monitor
-  stepper.setMaxSpeed(10000);       // steps per second
-  stepper.setAcceleration(5000);   // steps per second squared
+  stepper.setMaxSpeed(1000);       // steps per second
+  stepper.setAcceleration(500);   // steps per second squared
   stepper.setCurrentPosition(0);  // Start at zero
 
   Serial.println("Enter a target position (in steps):");

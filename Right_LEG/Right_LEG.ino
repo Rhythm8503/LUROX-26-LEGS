@@ -184,6 +184,7 @@ void Communication(void * pvParameters)
 
   for (;;)
   {
+    Serial.println();
     Serial.println("[Core 0]: Waiting for Handshake...");
 
     // Wait for handshake

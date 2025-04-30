@@ -68,7 +68,7 @@
 #define dirPin 1
 #define stepPin 2
 
-const int stepDelayMicros = 1000; // Step speed
+const int stepDelayMicros = 4000; // Step speed
 long currentPosition = 0;         // Track current position
 
 void setup() {
@@ -76,6 +76,7 @@ void setup() {
   pinMode(stepPin, OUTPUT);
   Serial.begin(115200);
   Serial.println("Enter target position in steps (e.g., 200, -400, etc):");
+  // For neck = +110 steps for rotation to the left, and -110 steps for rotation to the right
 }
 
 void loop() {
