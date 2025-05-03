@@ -68,7 +68,7 @@
 #define dirPin 1
 #define stepPin 2
 
-const int stepDelayMicros = 4000; // Step speed
+const int stepDelayMicros = 1000; // Step speed
 long currentPosition = 0;         // Track current position
 
 void setup() {
